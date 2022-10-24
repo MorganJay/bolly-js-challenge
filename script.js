@@ -21,30 +21,31 @@ createReadStream('./reactions.csv')
     reactions.push(reaction);
   })
   .on('end', () => {
-    reactions.sort((a, b) => +a.user_id - +b.user_id);
+    reactions.sort((a, b) => +a.job_id - +b.job_id);
     const userLikedJobs = reactions.reduce((acc, reaction) => {
       const { user_id, job_id, direction } = reaction;
       if (direction) {
         const userData = {
-          user_id: user_id,
-          jobs: [job_id],
+          job_id,
+          users: [user_id],
+          likes : 1
         };
-        if (acc.length && acc[acc.length - 1].user_id === user_id) {
-          acc[acc.length - 1].jobs.push(job_id);
+        if (acc.length && acc[acc.length - 1].job_id === job_id) {
+         if(!acc[acc.length - 1].users.includes(user_id)) acc[acc.length - 1].users.push(user_id);
+          acc[acc.length - 1].likes++;
         } else acc.push(userData);
       }
       return acc;
     }, []);
-    // console.log(userLikedJobs.length);
+    console.log(userLikedJobs.sort((a , b) => b.likes - a.likes));
 
-    const jobsLikedByUsers = reactions.reduce((acc, reaction) => {
-      const { user_id, job_id, direction } = reaction;
-      if (direction) {
-        if (acc[job_id]) acc[job_id].push(user_id);
-        else acc[job_id] = [user_id];
-      }
-      return acc;
-    }, {});
-    console.log(Object.keys(jobsLikedByUsers).length);
+    // const jobsLikedByUsers = reactions.reduce((acc, reaction) => {
+    //   const { user_id, job_id, direction } = reaction;
+    //   if (direction) {
+    //     if (acc[job_id] && !acc[job_id].includes(user_id)) acc[job_id].push(user_id);
+    //     else acc[job_id] = [user_id];
+    //   }
+    //   return acc;
+    // }, {});
   })
   .on('error', error => console.error(error.message));
