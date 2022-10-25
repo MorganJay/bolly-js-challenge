@@ -55,17 +55,9 @@ createReadStream('./reactions.csv')
       similarityList.sort((a, b) => b.jobs[0].count - a.jobs[0].count)
     );
 
+    //Task 1
     console.log(
       `The users with highest similarity are ${similarityList[0].user_id} and ${similarityList[1].user_id}`
     );
-
-    // const jobsLikedByUsers = reactions.reduce((acc, reaction) => {
-    //   const { user_id, job_id, direction } = reaction;
-    //   if (direction) {
-    //     if (acc[job_id] && !acc[job_id].includes(user_id)) acc[job_id].push(user_id);
-    //     else acc[job_id] = [user_id];
-    //   }
-    //   return acc;
-    // }, {});
   })
   .on('error', error => console.error(error.message));
